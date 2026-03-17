@@ -15,10 +15,12 @@ namespace ProductCatalogApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetProducts()
+        public IActionResult GetProducts( decimal? minPrice, int? categoryId)
         {
-            return Ok(_productService.GetProducts());
+            return Ok(_productService.GetAll(minPrice, categoryId));
         }
     }
 }
+
+
 

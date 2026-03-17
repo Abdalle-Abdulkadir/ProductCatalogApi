@@ -4,6 +4,7 @@ namespace ProductCatalogApi.Services
 {
     public interface IProductService
     {
-        List<ProductResponseDto> GetProducts();
+        IEnumerable<ProductResponseDto> GetAll(decimal? minPrice, int? categoryId);
     }
 }
+

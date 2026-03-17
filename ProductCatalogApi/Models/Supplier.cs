@@ -1,15 +1,10 @@
 ﻿namespace ProductCatalogApi.Models
 {
-    public class Product
+    public class Supplier
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-
-        public int CategoryId { get; set; }
-        public int SupplierId { get; set; }
-
+        public string Address { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
