@@ -1,6 +1,17 @@
-﻿namespace ProductCatalogApi.Data
+﻿using Microsoft.EntityFrameworkCore;
+using ProductCatalogApi.Models;
+
+namespace ProductCatalogApi.Data
 {
-    public class AppDbContext
+    public class AppDbContext : DbContext
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+
     }
 }
+

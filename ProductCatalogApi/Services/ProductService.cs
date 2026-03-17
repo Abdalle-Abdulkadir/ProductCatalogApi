@@ -1,12 +1,42 @@
-﻿using ProductCatalogApi.DTOs;
+﻿using ProductCatalogApi.Data;
+using ProductCatalogApi.DTOs;
 
 namespace ProductCatalogApi.Services
 {
     public class ProductService : IProductService
     {
-        public List<ProductResponseDto> GetProducts()
+        private readonly AppDbContext _context;
+
+        public ProductService(AppDbContext context)
         {
-            return new List<ProductResponseDto>();  
+            _context = context;
+        }
+
+        public IEnumerable<ProductResponseDto> GetAll(decimal? minPrice, int? categoryId)
+        {
+            var query = _context.Products.AsQueryable();
+
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= minPrice.Value);
+            }
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            return query
+                .Select(p => new ProductResponseDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    CategoryId = p.CategoryId,
+                    SupplierId = p.SupplierId
+                })
+                .ToList();
         }
     }
 }
+
