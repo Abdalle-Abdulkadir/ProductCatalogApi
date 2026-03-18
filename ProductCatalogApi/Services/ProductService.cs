@@ -12,7 +12,7 @@ namespace ProductCatalogApi.Services
             _context = context;
         }
 
-        public IEnumerable<ProductResponseDto> GetAll(decimal? minPrice, int? categoryId)
+        public IEnumerable<ProductResponseDto> GetAll(decimal? minPrice, int? categoryId, int pageNumber, int pageSize)
         {
             var query = _context.Products.AsQueryable();
 
@@ -25,7 +25,12 @@ namespace ProductCatalogApi.Services
                 query = query.Where(p => p.CategoryId == categoryId.Value);
             }
 
+            query = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+
             return query
+
                 .Select(p => new ProductResponseDto
                 {
                     Id = p.Id,
