@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using ProductCatalogApi.DTOs;
 using ProductCatalogApi.Services;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace ProductCatalogApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableRateLimiting("fixed")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -29,7 +31,7 @@ namespace ProductCatalogApi.Controllers
             var result = await _productService.Create(dto);
 
             if (!result)
-                return BadRequest();
+                return BadRequest("Product could not be created");
 
             return Ok();
         }
@@ -40,7 +42,7 @@ namespace ProductCatalogApi.Controllers
             var result = await _productService.Update(id, dto);
 
             if (!result)
-                return NotFound();
+                return NotFound("Prodcut not found");
 
             return Ok();
         }
@@ -51,7 +53,7 @@ namespace ProductCatalogApi.Controllers
             var result = await _productService.Delete(id);
 
             if (!result)
-                return NotFound();
+                return NotFound("Prodcut not found");
 
             return Ok();
         }

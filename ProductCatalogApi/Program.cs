@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using ProductCatalogApi.Data;
 using ProductCatalogApi.Models;
@@ -5,15 +6,31 @@ using ProductCatalogApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var apikey= builder.Configuration["ApiKey"];
+
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("ProductDb"));
 
 
 builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddFixedWindowLimiter("fixed", config =>
+    {
+        config.Window = TimeSpan.FromSeconds(10);
+        config.PermitLimit = 2;
+        config.QueueLimit = 0;
+    });
+});
+
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
@@ -57,8 +74,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRateLimiter();
+
 app.UseAuthorization();
 
-app.MapControllers();
+
+// UseRouting is not needed in .NET 6+ (minimal hosting).
+// Routing is handled automatically by MapControllers().
+
+app.MapControllers(); 
 
 app.Run();

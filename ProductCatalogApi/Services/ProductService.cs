@@ -1,21 +1,41 @@
-﻿using ProductCatalogApi.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using ProductCatalogApi.Data;
 using ProductCatalogApi.DTOs;
 using ProductCatalogApi.Models;
-using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace ProductCatalogApi.Services
 {
     public class ProductService : IProductService
     {
         private readonly AppDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public ProductService(AppDbContext context)
+        public ProductService(AppDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         public async Task<PagingResultDto<ProductResponseDto>> GetAll(decimal? minPrice, int? categoryId, int pageNumber, int pageSize)
         {
+
+            
+
+            var cacheKey = $"products_{minPrice}_{categoryId}_{pageNumber}_{pageSize}";
+            
+
+
+            if (_cache.TryGetValue(cacheKey, out var cachedResult))
+            {
+                
+
+                return (PagingResultDto<ProductResponseDto>)cachedResult;
+            }
+
+
+
             var query = _context.Products.AsQueryable();
 
             if (minPrice.HasValue)
@@ -45,7 +65,7 @@ namespace ProductCatalogApi.Services
                 })
                 .ToListAsync();
 
-            return new PagingResultDto<ProductResponseDto>
+            var result = new PagingResultDto<ProductResponseDto>
             {
                 Items = items,
                 Page = pageNumber,
@@ -53,6 +73,13 @@ namespace ProductCatalogApi.Services
                 TotalCount = totalCount,
                 TotalPages = (int)Math.Ceiling((double)totalCount / pageSize)
             };
+
+            _cache.Set(cacheKey, result, TimeSpan.FromMinutes(1));
+
+            
+
+            return result;
+
         }
 
         public async Task<bool> Create(ProductCreateDto dto)
