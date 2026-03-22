@@ -51,6 +51,10 @@ The API exposes the following main endpoints for product management:
 - PUT /api/Products/{id} → Updates an existing product
 - DELETE /api/Products/{id} → Removes a product
 
+Note: This API focuses on Products as the main resource.
+Category and Supplier are part of the data model and relationships, but separate endpoints for them are not implemented.
+
+
 ## Swagger
 
 Swagger UI is included for interactive API testing and documentation.
@@ -66,6 +70,20 @@ Swagger UI is included for interactive API testing and documentation.
 Rate limiting is implemented to control request traffic.
 - Limit: 2 requests per 10 seconds
 - Returns HTTP 429 (Too Many Requests) when exceeded
+
+## User Secrets
+
+This project uses User Secrets to store sensitive data securely during development.
+Instead of hardcoding values (e.g. API keys), secrets are stored outside the source code.
+
+## Performance Measurement
+
+Caching was implemented to improve response time for the GET /api/Products endpoint.
+- Cache Miss (first request, data from database): ~417 ms  
+- Cache Hit (second request, data from cache): ~5 ms  
+This shows a significant performance improvement when using caching.
+A screenshot of the test results can be found in the `/documents` folder for reference.
+
 
 ## How to Run the Project
 
