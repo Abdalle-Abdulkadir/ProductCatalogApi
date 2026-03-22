@@ -89,7 +89,7 @@ I implemented features such as filtering, pagination, validation, caching, and r
 If I were to improve this project, I would add persistent database support, authentication, and more advanced error handling.
 
 ## Author
-Abdalle Abdulkadir
+- Abdalle Abdulkadir
 
 
 
