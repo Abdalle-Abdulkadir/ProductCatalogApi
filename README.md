@@ -80,7 +80,7 @@ Follow these steps to run the application:
 The project is supported by the following documentation:
 - ER Diagram → Visualizes entities and relationships
 - README → Explains project structure, setup, and usage
-- Screenshots (optional) → Demonstrate API functionality via Swagger
+- Screenshots → Demonstrate API functionality via Swagger
 
 ## Reflection
 
